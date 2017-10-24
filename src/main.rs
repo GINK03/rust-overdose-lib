@@ -72,7 +72,12 @@ fn main() {
 
   // min関数のテスト
   let min = newList(10, 100).min();
-  println!("MIN : {}", min);
-  assert_eq!(min, 10);
+  println!("MIN : {}", min.unwrap());
+  assert_eq!(min, Some(10));
+  
+  // max関数のテスト
+  let max = newList(10, 100).max();
+  println!("max : {}", max.unwrap());
+  assert_eq!(max, Some(99));
 }
 

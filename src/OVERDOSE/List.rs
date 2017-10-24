@@ -142,12 +142,34 @@ impl<T: Clone+Num+Copy+Debug> List<T> {
 }
 // min
 impl<T: Clone+Num+PartialOrd+Copy+Debug> List<T> {
-  pub fn min(self) -> T {
-    let mut ret:T = self.vec[0];
-    for v in self.vec {
-      if( ret > v ) { ret = v; }
-    }
-    ret
+  pub fn min(self) -> Option<T> {
+    let result = match self.vec.clone().first() {
+      Some(head) => {
+        let mut ret = *head; 
+        for v in self.vec {
+          if( ret > v ) { ret = v; }
+        }
+        Some(ret)
+      },
+      None => None
+    };
+    result
+  }
+}
+// max
+impl<T: Clone+Num+PartialOrd+Copy+Debug> List<T> {
+  pub fn max(self) -> Option<T> {
+    let result = match self.vec.clone().first() {
+      Some(head) => {
+        let mut ret = *head; 
+        for v in self.vec {
+          if( ret < v ) { ret = v; }
+        }
+        Some(ret)
+      },
+      None => None
+    };
+    result
   }
 }
 pub fn newList(start:i32, end:i32) -> List<i32> {
