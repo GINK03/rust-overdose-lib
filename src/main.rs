@@ -77,7 +77,16 @@ fn main() {
   
   // max関数のテスト
   let max = newList(10, 100).max();
-  println!("max : {}", max.unwrap());
+  println!("MAX : {}", max.unwrap());
   assert_eq!(max, Some(99));
+
+  let repeat = newList(1,3).repeat(2);
+  repeat.echo();
+
+  let product = newList(1,3).product(3);
+  for p in product.vec {
+    p.echo();
+  }
+  
 }
 

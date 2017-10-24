@@ -117,6 +117,17 @@ impl<T: Clone> List<T> {
     }
     counter == total_size
   }
+  // repeat
+  pub fn repeat(self, repeatNum: i32) -> List<T> {
+    let mut ret:Vec<T> = Vec::new();
+    for x in 0..repeatNum {
+      for v in self.vec.clone() {
+        ret.push(v);
+      }
+    }
+    List{ vec:ret }
+  }
+
 }
 
 // echo
@@ -127,6 +138,31 @@ impl<T: Clone+Debug> List<T> {
       print!("{:?},", v);
     }
     println!("]");
+  }
+}
+
+// product 
+impl<T: Clone+Copy+Debug> List<T> {
+  pub fn product(self, depth: i32) -> List<List<T>> {
+    let mut rs:Vec<Vec<T>> = Vec::new(); 
+    // initialize
+    for v in self.vec.clone() {  rs.push( [v].to_vec() ); }
+
+    for r in 0..depth-1 { 
+      let mut tmp:Vec<Vec<T>> = Vec::new();
+      for v in self.vec.clone() {
+        for mut r in rs.clone() {
+          r.push(v);
+          tmp.push(r);
+        }
+      }
+      rs = tmp;
+    }
+    let mut rr: List<List<T>> = List{ vec:Vec::new() };
+    for r in rs {
+      rr.vec.push( List{vec:r} );
+    } 
+    rr
   }
 }
 
