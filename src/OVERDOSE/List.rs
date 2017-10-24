@@ -13,7 +13,7 @@ use std::ops::{Add};
 
 // num packages dependencies
 extern crate num;
-use num::FromPrimitive;
+use self::num::FromPrimitive;
 //use std::num::Zero;
 //use std::num::Num;
 
