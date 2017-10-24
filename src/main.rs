@@ -67,6 +67,12 @@ fn main() {
   // これはただ出せばいいだけ
   newList(10,30).show();
 
+  // sum関数のテスト
   assert_eq!(newList(1,100).sum(), 4950);
+
+  // min関数のテスト
+  let min = newList(10, 100).min();
+  println!("MIN : {}", min);
+  assert_eq!(min, 10);
 }
 

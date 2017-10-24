@@ -10,7 +10,7 @@ use std::ops::Shr;
 use std::fmt::Debug;
 use std::fmt::Display;
 use std::ops::{Add};
-use std::cmp::Ord;
+use std::cmp::{Ord, PartialOrd};
 // num packages dependencies
 extern crate num;
 use self::num::FromPrimitive;
@@ -136,6 +136,16 @@ impl<T: Clone+Num+Copy+Debug> List<T> {
     let mut ret:T = T::zero();
     for v in self.vec {
       ret = ret + v;
+    }
+    ret
+  }
+}
+// min
+impl<T: Clone+Num+PartialOrd+Copy+Debug> List<T> {
+  pub fn min(self) -> T {
+    let mut ret:T = self.vec[0];
+    for v in self.vec {
+      if( ret > v ) { ret = v; }
     }
     ret
   }
