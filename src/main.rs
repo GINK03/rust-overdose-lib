@@ -59,5 +59,7 @@ fn main() {
       println!("KEY : {} ",key);
       val.echo();
     });
+
+  newList(10,30).show();
 }
 
