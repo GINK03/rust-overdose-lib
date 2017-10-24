@@ -14,6 +14,7 @@ use std::ops::{Add};
 // num packages dependencies
 extern crate num;
 use self::num::FromPrimitive;
+use self::num::Num;
 //use std::num::Zero;
 //use std::num::Num;
 
@@ -121,11 +122,11 @@ impl<T: Clone+Debug> List<T> {
 }
 
 // sum
-impl<T: Clone+Int+Debug> List<T> {
+impl<T: Clone+Num+Copy+Debug> List<T> {
   pub fn sum(self) -> T {
     let mut ret:T = T::zero();
     for v in self.vec {
-      ret + v;
+      ret = ret + v;
     }
     ret
   }
