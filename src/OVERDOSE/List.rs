@@ -10,7 +10,7 @@ use std::ops::Shr;
 use std::fmt::Debug;
 use std::fmt::Display;
 use std::ops::{Add};
-
+use std::cmp::Ord;
 // num packages dependencies
 extern crate num;
 use self::num::FromPrimitive;
@@ -80,6 +80,15 @@ impl<T: Clone> List<T> {
       y = functor(y, v);
     };
     y
+  }
+  // sortBy (安全なソート)
+  pub fn sortBy<FUNCRET: Clone+Ord>(self, functor: &Fn(T) -> FUNCRET) -> List<T> {
+    let mut cloned = self.vec.clone();
+    cloned.sort_by_key( |key|{
+      let funcret:FUNCRET = functor(key.clone());
+      funcret
+    }); 
+    List{ vec:cloned }
   }
   // groupBy
   pub fn groupBy<OUTPUT: Clone + Eq + Hash + PartialEq>(self, functor: &Fn(T) -> OUTPUT) -> List<(OUTPUT,List<T>)> {

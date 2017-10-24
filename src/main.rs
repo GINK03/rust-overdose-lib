@@ -36,30 +36,37 @@ fn main() {
   let ret = List{ vec: (0..100).collect::<Vec<i32>>() }.all( &|x| { x%10 == x }); 
   println!("{}", ret);
   List{ vec: (0..100).collect::<Vec<i32>>() }.echo();
+  
+  // test readl time map
+  assert_eq!( newList(1,10).map( &|x| { println!("{}",x); x} ).vec, [1,2,3,4,5,6,7,8,9]);
 
+  // test reduce 1
   let reduce = List{ vec: (0..100).collect::<Vec<i32>>() }.reduce(0, &|y:i32, x:i32| { y + x });
+  assert_eq!( reduce, 4950);
   println!("reduce result {}", reduce);
+
+  // test reduce 2
   let reduce = List{ vec: (1..10).collect::<Vec<i64>>() }.reduce(1, &|y:i64, x:i64| { y * x });
+  assert_eq!( reduce, 362880 );
   println!("reduce result {}", reduce);
 
-  Enumerate( (1..10).collect::<Vec<i64>>().iter() );
-
-  //List{ vec:(0..10) };
-  newList(1,100).map( &|x| {  println!("{}",x); } );
-
-  newList(1,100) 
+  // groupbyとsortbyのテスト
+  let groupby = newList(1,100) 
     .map( &|x| { x } )
     .groupBy( &|x| { 
-      let key = x%5;
-      println!("KEY GROUPBY : {}", key);
+      let key = x%3;
       key
     })
     .map( &|it| { 
       let (key, val) = it;
-      println!("KEY : {} ",key);
-      val.echo();
-    });
-
+      let len = val.vec.len();
+      println!("KEY : {} VAL-LEN : {}",key, len);
+      (key, len)
+    }).sortBy( &|x|{ x.0 } );
+  assert_eq!(groupby.vec, [(0, 33), (1, 33), (2, 33)].iter().cloned().collect::<Vec<(i32,usize)>>());
+  // これはただ出せばいいだけ
   newList(10,30).show();
+
+  assert_eq!(newList(1,100).sum(), 4950);
 }
 
