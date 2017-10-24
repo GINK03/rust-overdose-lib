@@ -68,7 +68,7 @@ impl<T:Clone + Display> List<T> {
   }
 }
 impl<T: Clone> List<T> {
-  // map
+  // map(安全なマップ)
   pub fn map<OUTPUT: Clone>(self, functor: &Fn(T) -> OUTPUT) -> List<OUTPUT> {
     let vec = self.vec.iter().map( |x| { functor(x.clone()) } ).collect::<Vec<OUTPUT>>();
     List { vec:vec }
