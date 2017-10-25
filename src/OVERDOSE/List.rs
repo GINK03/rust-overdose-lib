@@ -189,7 +189,20 @@ impl<T: Clone+Eq+Hash+Num+Copy+Debug> List<T> {
     set
   }
 }
-
+// uniqの実装
+impl<T: Clone+Eq+Hash+Num+Copy+Debug> List<T> {
+  pub fn toUniq(self) -> List<T> {
+    let mut set:HashSet<T> = HashSet::new();
+    for v in self.vec { 
+      set.insert(v);
+    }
+    let mut vec:Vec<T> = Vec::new();
+    for s in set {
+      vec.push(s);
+    }
+    List{vec:vec}
+  }
+}
 // accumulate
 impl<T: Clone+Num+Copy+Debug> List<T> {
   pub fn accumulate(self) -> List<T> {

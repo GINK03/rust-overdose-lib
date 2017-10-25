@@ -103,5 +103,9 @@ fn main() {
   println!("to set {:?}", to_set);
   let hashset:HashSet<i32> = vec![1,2,3,4,5].into_iter().collect();
   assert_eq!(to_set, hashset);
+
+  let to_uniq = List{vec:vec![1,2,2,2,3,3,3]}.toUniq();
+  assert_eq!(to_uniq.vec.clone().into_iter().collect::<HashSet<i32>>(), vec![3,2,1].into_iter().collect::<HashSet<i32>>());
+  println!("to uniq {:?}", to_uniq.vec);
 }
 
