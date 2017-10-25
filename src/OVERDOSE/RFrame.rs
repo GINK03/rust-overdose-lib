@@ -17,15 +17,19 @@ use std::marker::Copy;
 extern crate num;
 use self::num::FromPrimitive;
 use self::num::Num;
+use std::hash::{Hash, Hasher};
 //use std::num::Zero;
 //use std::num::Num;
-
-use std::hash::{Hash, Hasher};
 #[derive(Debug)]
 pub struct RFrame<T:Clone>{
-  pub header:Option<HashMap<i32,String>>,
+  pub header:Option<HashMap<String,i32>>,
   pub cursol:i32,
   pub vec: Vec<T>,
+}
+#[derive(Debug)]
+pub struct INNER<TI:Clone>{
+  pub cursol:i32,
+  pub inner: Vec<TI>,
 }
 
 // operator >> のオーバーロード
@@ -282,6 +286,35 @@ impl RFrame<i32> {
 impl<T: Clone> RFrame<T> {
   pub fn withVec( vs:Vec<T> ) -> RFrame<T> {
     RFrame { header:None, cursol:0, vec:vs }
+  }
+  pub fn withVecIndexed( vi:Vec<String>, vs:Vec<T> ) -> RFrame<T> {
+    let mut i = 0;
+    let mut map:HashMap<String, i32> = HashMap::new();
+    for v in vi {
+      map.insert(v,i); 
+      i += 1;
+    }
+    RFrame { header:Some(map), cursol:0, vec:vs }
+  }
+}
+// headerでindexing
+impl<T: Clone> RFrame<Vec<T>> {
+  pub fn index(self, key:&str) -> RFrame<Vec<T>> {
+    let key:String = key.to_string();
+    let mut vec:Vec<Vec<T>> = Vec::new();
+    match self.header {
+      Some(head) => { 
+        let index:usize = match head.get(&key) {
+           Some(entry) => *entry as usize, 
+           None => 0,
+        };
+        for v in self.vec { 
+          vec.push( [v[index].clone()].to_vec() );
+        };
+      },
+      None => {},
+    };
+    RFrame::withVec(vec)
   }
 }
 

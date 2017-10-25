@@ -110,5 +110,19 @@ fn main() {
   let rv = RFrame::withVec( [3,4,5,6,7].to_vec() );
   println!("Vector initializer list {:?}", rv.vec );
   assert_eq!( rv.toVec(), [3,4,5,6,7] ); 
+
+  // filterのテスト
+  let filter = RFrame::withRange(1,10).filter( &|x|{ 
+    x > 5
+  });
+  println!("{:?}", filter.vec);
+  assert_eq!(filter.vec, [6,7,8,9]);
+
+  // headerのテスト
+  let x2 = RFrame::withVecIndexed(vec!["A","B","C"].iter().map(|x| x.to_string()).collect::<Vec<String>>(), vec![vec![1,2,3], vec![4,5,6]] );
+  println!("{:?}", x2.header);
+
+  let ix2 = x2.index("A");
+  println!("{:?}", ix2.vec);
 }
 
