@@ -90,6 +90,11 @@ fn main() {
  
   let accumulate = newList(1,10).accumulate();
   assert_eq!(accumulate.vec, [1,3,6,10,15,21,28,36,45]);
-  
+  println!("Accumulated {:?}", accumulate); 
+
+  let to_vec = newList(1,4).map( &|x|{ x*2} ).toVec();
+  println!("to vec {:?}", to_vec);
+  assert_eq!(to_vec, [2,4,6]);
+
 }
 

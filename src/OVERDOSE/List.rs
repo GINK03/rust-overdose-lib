@@ -23,6 +23,7 @@ use std::hash::{Hash, Hasher};
 pub struct List<T:Clone>{
   pub vec: Vec<T>,
 }
+
 // operator >> のオーバーロード
 impl<T: Clone> Shr<usize> for List<T> {
   type Output = Self;
@@ -30,12 +31,14 @@ impl<T: Clone> Shr<usize> for List<T> {
     List { vec: Vec::new() }
   }
 }
+
 // Cloneの実装
 impl<T: Clone> Clone for List<T> {
   fn clone(&self) -> List<T> { 
     List{ vec:self.vec.clone() }
   }
 }
+
 // iteratorによる初期化
 impl<T:Clone> List<T> {
   pub fn new<A:Clone,IT: Iterator<Item=A>>(it:IT) -> List<A> {
@@ -46,12 +49,15 @@ impl<T:Clone> List<T> {
     List { vec: tmp }
   }
 }
+
 // pushの実装
 impl<T:Clone> List<T> {
   pub fn push(mut self, t:T) -> () {
     self.vec.push(t.clone());
   }
 }
+
+// showの実装
 impl<T:Clone + Display> List<T> {
   pub fn show(self) -> () {
     let mut vstring:Vec<String> = Vec::new();
@@ -68,6 +74,7 @@ impl<T:Clone + Display> List<T> {
     println!("]");
   }
 }
+
 impl<T: Clone> List<T> {
   // map(安全なマップ)
   pub fn map<OUTPUT: Clone>(self, functor: &Fn(T) -> OUTPUT) -> List<OUTPUT> {
@@ -128,7 +135,6 @@ impl<T: Clone> List<T> {
     }
     List{ vec:ret }
   }
-
 }
 
 // echo
@@ -164,6 +170,12 @@ impl<T: Clone+Copy+Debug> List<T> {
       rr.vec.push( List{vec:r} );
     } 
     rr
+  }
+}
+// toVecの実装
+impl<T: Clone+Num+Copy+Debug> List<T> {
+  pub fn toVec(self) -> Vec<T> {
+    self.vec
   }
 }
 
