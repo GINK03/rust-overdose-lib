@@ -299,7 +299,7 @@ impl<T: Clone> RFrame<T> {
 }
 // headerでindexing
 impl<T: Clone> RFrame<Vec<T>> {
-  pub fn index(self, key:&str) -> RFrame<Vec<T>> {
+  pub fn index<AG:Display>(self, key:AG) -> RFrame<Vec<T>> {
     let key:String = key.to_string();
     let mut vec:Vec<Vec<T>> = Vec::new();
     match self.header {
@@ -313,6 +313,47 @@ impl<T: Clone> RFrame<Vec<T>> {
         };
       },
       None => {},
+    };
+    RFrame::withVec(vec)
+  }
+}
+// headerでindexing(複数要素)
+impl<T: Clone> RFrame<Vec<T>> {
+  pub fn indexes<AC:Display>(self, keys:Vec<AC>) -> RFrame<Vec<T>> {
+    let keysStr:Vec<String> = keys.iter().map( |x| x.to_string()).collect::<Vec<String>>();
+    let mut vec:Vec<Vec<T>> = Vec::new();
+    match self.header {
+      Some(head) => { 
+        for v in self.vec { 
+          let mut temp:Vec<T> = Vec::new();
+          for k in keysStr.clone() {
+            let index:usize = match head.get(&k) {
+              Some(entry) => *entry as usize, 
+              None => 0,
+            };
+            temp.push( v[index].clone() );
+          }
+          vec.push( temp );
+        };
+      }
+      None => {
+        // use phantom keys
+        let head = keysStr.iter().map (|x| { 
+          (x, x.parse::<usize>().unwrap())} 
+        ).collect::<HashMap<&String,usize>>();
+
+        for v in self.vec { 
+          let mut temp:Vec<T> = Vec::new();
+          for k in keysStr.clone() {
+            let index:usize = match head.get(&k) {
+              Some(entry) => *entry as usize, 
+              None => 0,
+            };
+            temp.push( v[index].clone() );
+          }
+          vec.push( temp );
+        };
+      },
     };
     RFrame::withVec(vec)
   }

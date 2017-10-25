@@ -122,7 +122,8 @@ fn main() {
   let x2 = RFrame::withVecIndexed(vec!["A","B","C"].iter().map(|x| x.to_string()).collect::<Vec<String>>(), vec![vec![1,2,3], vec![4,5,6]] );
   println!("{:?}", x2.header);
 
-  let ix2 = x2.index("A");
+  let ix2 = x2.indexes(["A", "C"].to_vec());
   println!("{:?}", ix2.vec);
+  assert_eq!(format!("{:?}",ix2.vec), "[[1, 3], [4, 6]]");
 }
 
