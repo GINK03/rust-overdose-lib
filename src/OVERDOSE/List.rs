@@ -36,8 +36,8 @@ impl<T: Clone> Clone for List<T> {
     List{ vec:self.vec.clone() }
   }
 }
+// iteratorによる初期化
 impl<T:Clone> List<T> {
-  // iteratorによる初期化
   pub fn new<A:Clone,IT: Iterator<Item=A>>(it:IT) -> List<A> {
     let mut tmp:Vec<A> = Vec::new();
     for i in it {
@@ -46,6 +46,7 @@ impl<T:Clone> List<T> {
     List { vec: tmp }
   }
 }
+// pushの実装
 impl<T:Clone> List<T> {
   pub fn push(mut self, t:T) -> () {
     self.vec.push(t.clone());
@@ -166,6 +167,18 @@ impl<T: Clone+Copy+Debug> List<T> {
   }
 }
 
+// accumulate
+impl<T: Clone+Num+Copy+Debug> List<T> {
+  pub fn accumulate(self) -> List<T> {
+    let mut acc:T = T::zero();
+    let mut ret:Vec<T> = Vec::new();
+    for v in self.vec {
+      acc = acc + v;
+      ret.push(acc);
+    }
+    List{vec:ret}
+  }
+}
 // sum
 impl<T: Clone+Num+Copy+Debug> List<T> {
   pub fn sum(self) -> T {

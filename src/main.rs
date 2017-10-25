@@ -87,6 +87,9 @@ fn main() {
   for p in product.vec {
     p.echo();
   }
+ 
+  let accumulate = newList(1,10).accumulate();
+  assert_eq!(accumulate.vec, [1,3,6,10,15,21,28,36,45]);
   
 }
 
