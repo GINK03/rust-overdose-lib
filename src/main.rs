@@ -1,6 +1,7 @@
 
 
 use std::collections::HashMap;
+use std::collections::HashSet;
 extern crate itertools;
 use itertools::Itertools;
 use std::ops::Shr;
@@ -92,9 +93,15 @@ fn main() {
   assert_eq!(accumulate.vec, [1,3,6,10,15,21,28,36,45]);
   println!("Accumulated {:?}", accumulate); 
 
+  // toVecのテスト
   let to_vec = newList(1,4).map( &|x|{ x*2} ).toVec();
   println!("to vec {:?}", to_vec);
   assert_eq!(to_vec, [2,4,6]);
-
+  
+  // toSetのテスト
+  let to_set = List{vec: vec![1,2,3,4,5,4,3]}.toSet();
+  println!("to set {:?}", to_set);
+  let hashset:HashSet<i32> = vec![1,2,3,4,5].into_iter().collect();
+  assert_eq!(to_set, hashset);
 }
 

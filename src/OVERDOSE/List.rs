@@ -10,7 +10,8 @@ use std::ops::Shr;
 use std::fmt::Debug;
 use std::fmt::Display;
 use std::ops::{Add};
-use std::cmp::{Ord, PartialOrd};
+use std::cmp::{Eq, Ord, PartialOrd};
+use std::collections::HashSet;
 // num packages dependencies
 extern crate num;
 use self::num::FromPrimitive;
@@ -176,6 +177,16 @@ impl<T: Clone+Copy+Debug> List<T> {
 impl<T: Clone+Num+Copy+Debug> List<T> {
   pub fn toVec(self) -> Vec<T> {
     self.vec
+  }
+}
+// toSetの実装
+impl<T: Clone+Eq+Hash+Num+Copy+Debug> List<T> {
+  pub fn toSet(self) -> HashSet<T> {
+    let mut set:HashSet<T> = HashSet::new();
+    for v in self.vec { 
+      set.insert(v);
+    }
+    set
   }
 }
 
