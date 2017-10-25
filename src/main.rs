@@ -125,5 +125,10 @@ fn main() {
   let ix2 = x2.indexes(["A", "C"].to_vec());
   println!("{:?}", ix2.vec);
   assert_eq!(format!("{:?}",ix2.vec), "[[1, 3], [4, 6]]");
+  
+  let x3 = RFrame::withVec( vec![vec![1,2,3,4], vec![4,5,6,7]] );
+  let x3i = x3.indexes(vec![0,2,3]);
+  println!("{:?}", x3i.vec);
+  assert_eq!(format!("{:?}",x3i.vec), "[[1, 3, 4], [4, 6, 7]]");
 }
 
