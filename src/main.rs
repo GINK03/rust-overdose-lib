@@ -7,10 +7,8 @@ use itertools::Itertools;
 use std::ops::Shr;
 mod OVERDOSE;
 use OVERDOSE::RFrame::RFrame;
-use OVERDOSE::RFrame::newRFrame;
 use OVERDOSE::File::Read;
 use OVERDOSE::Enumerate::Enumerate;
-
 
 fn main() {
   // The statements here will be executed when the compiled binary is called
@@ -39,7 +37,7 @@ fn main() {
   RFrame{ vec: (0..100).collect::<Vec<i32>>() }.echo();
   
   // test readl time map
-  assert_eq!( newRFrame(1,10).map( &|x| { println!("{}",x); x} ).vec, [1,2,3,4,5,6,7,8,9]);
+  assert_eq!( RFrame::withRange(1,10).vec, [1,2,3,4,5,6,7,8,9]);
 
   // test reduce 1
   let reduce = RFrame{ vec: (0..100).collect::<Vec<i32>>() }.reduce(0, &|y:i32, x:i32| { y + x });
@@ -52,7 +50,7 @@ fn main() {
   println!("reduce result {}", reduce);
 
   // groupbyとsortbyのテスト
-  let groupby = newRFrame(1,100) 
+  let groupby = RFrame::withRange(1,100) 
     .map( &|x| { x } )
     .groupBy( &|x| { 
       let key = x%3;
@@ -66,35 +64,35 @@ fn main() {
     }).sortBy( &|x|{ x.0 } );
   assert_eq!(groupby.vec, [(0, 33), (1, 33), (2, 33)].iter().cloned().collect::<Vec<(i32,usize)>>());
   // これはただ出せばいいだけ
-  newRFrame(10,30).show();
+  RFrame::withRange(10,30).show();
 
   // sum関数のテスト
-  assert_eq!(newRFrame(1,100).sum(), 4950);
+  assert_eq!(RFrame::withRange(1,100).sum(), 4950);
 
   // min関数のテスト
-  let min = newRFrame(10, 100).min();
+  let min = RFrame::withRange(10, 100).min();
   println!("MIN : {}", min.unwrap());
   assert_eq!(min, Some(10));
   
   // max関数のテスト
-  let max = newRFrame(10, 100).max();
+  let max = RFrame::withRange(10, 100).max();
   println!("MAX : {}", max.unwrap());
   assert_eq!(max, Some(99));
 
-  let repeat = newRFrame(1,3).repeat(2);
+  let repeat = RFrame::withRange(1,3).repeat(2);
   repeat.echo();
 
-  let product = newRFrame(1,3).product(3);
+  let product = RFrame::withRange(1,3).product(3);
   for p in product.vec {
     p.echo();
   }
  
-  let accumulate = newRFrame(1,10).accumulate();
+  let accumulate = RFrame::withRange(1,10).accumulate();
   assert_eq!(accumulate.vec, [1,3,6,10,15,21,28,36,45]);
   println!("Accumulated {:?}", accumulate); 
 
   // toVecのテスト
-  let to_vec = newRFrame(1,4).map( &|x|{ x*2} ).toVec();
+  let to_vec = RFrame::withRange(1,4).map( &|x|{ x*2} ).toVec();
   println!("to vec {:?}", to_vec);
   assert_eq!(to_vec, [2,4,6]);
   
@@ -107,5 +105,10 @@ fn main() {
   let to_uniq = RFrame{vec:vec![1,2,2,2,3,3,3]}.toUniq();
   assert_eq!(to_uniq.vec.clone().into_iter().collect::<HashSet<i32>>(), vec![3,2,1].into_iter().collect::<HashSet<i32>>());
   println!("to uniq {:?}", to_uniq.vec);
+  
+  // withVecで初期化可能
+  let rv = RFrame::withVec( [3,4,5,6,7].to_vec() );
+  println!("Vector initializer list {:?}", rv.vec );
+  assert_eq!( rv.toVec(), [3,4,5,6,7] ); 
 }
 

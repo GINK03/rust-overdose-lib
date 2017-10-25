@@ -12,6 +12,7 @@ use std::fmt::Display;
 use std::ops::{Add};
 use std::cmp::{Eq, Ord, PartialOrd};
 use std::collections::HashSet;
+use std::marker::Copy;
 // num packages dependencies
 extern crate num;
 use self::num::FromPrimitive;
@@ -89,6 +90,16 @@ impl<T: Clone> RFrame<T> {
       y = functor(y, v);
     };
     y
+  }
+  // filter
+  pub fn filter(self, functor: &Fn(T) -> bool) -> RFrame<T> {
+    let mut ret:Vec<T> = Vec::new();
+    for v in self.vec {
+      if functor(v.clone()) == true {
+        ret.push(v); 
+      }
+    }
+    RFrame::withVec(ret)
   }
   // sortBy (安全なソート)
   pub fn sortBy<FUNCRET: Clone+Ord>(self, functor: &Fn(T) -> FUNCRET) -> RFrame<T> {
@@ -176,7 +187,7 @@ impl<T: Clone+Copy+Debug> RFrame<T> {
 // toVecの実装
 impl<T: Clone+Num+Copy+Debug> RFrame<T> {
   pub fn toVec(self) -> Vec<T> {
-    self.vec
+    self.vec.clone()
   }
 }
 // toSetの実装
@@ -257,11 +268,25 @@ impl<T: Clone+Num+PartialOrd+Copy+Debug> RFrame<T> {
     result
   }
 }
-pub fn newRFrame(start:i32, end:i32) -> RFrame<i32> {
-  let mut tmp:Vec<i32> = (start..end).collect::<Vec<i32>>();
-  RFrame { vec: tmp }
+
+// rangeで初期化することができる
+impl RFrame<i32> {
+  pub fn withRange(start:i32, end:i32) -> RFrame<i32> {
+    let mut tmp:Vec<i32> = (start..end).collect::<Vec<i32>>();
+    RFrame { vec: tmp }
+  }
 }
-pub fn newBlankRFrame<T:Clone>() -> RFrame<T> {
-  let tmp:Vec<T> = Vec::new();
-  RFrame { vec: tmp }
+// vecで初期化することができる( vecはコピーでなくて譲渡 )
+impl<T: Clone> RFrame<T> {
+  pub fn withVec( vs:Vec<T> ) -> RFrame<T> {
+    RFrame { vec:vs }
+  }
+}
+
+// Blackのデータフレームを作る
+impl<T: Clone> RFrame<T> {
+  pub fn withBlank( ) -> RFrame<T> {
+    let v:Vec<T> = Vec::new();
+    RFrame { vec:v }
+  }
 }
