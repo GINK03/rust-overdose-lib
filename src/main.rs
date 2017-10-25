@@ -23,29 +23,29 @@ fn main() {
   } ).collect::<Vec<_>>();
   //contents.iter().map(|x| {println!("{}",x);0} ).collect::<Vec<_>>();
   (0..100).map( |x| { println!("{}",x);(x%5,x)}) ;
-  RFrame{ vec: (0..100).collect::<Vec<i32>>() }
+  RFrame::withRange(0,100)
     .map( &|x| { x*x } )
     .map( &|x| { 
       println!("{}",x);
       0
     } )  
     ;
-  let ret = RFrame{ vec: (0..100).collect::<Vec<i32>>() }.all( &|x| { x%1000 == x }); 
+  let ret = RFrame::withRange(1,1000).all( &|x| { x%1000 == x }); 
   println!("{}", ret);
-  let ret = RFrame{ vec: (0..100).collect::<Vec<i32>>() }.all( &|x| { x%10 == x }); 
+  let ret = RFrame::withRange(1,1000).all( &|x| { x%10 == x }); 
   println!("{}", ret);
-  RFrame{ vec: (0..100).collect::<Vec<i32>>() }.echo();
+  RFrame::withRange(1,16).echo();
   
   // test readl time map
   assert_eq!( RFrame::withRange(1,10).vec, [1,2,3,4,5,6,7,8,9]);
 
   // test reduce 1
-  let reduce = RFrame{ vec: (0..100).collect::<Vec<i32>>() }.reduce(0, &|y:i32, x:i32| { y + x });
+  let reduce = RFrame::withRange(0,100).reduce(0, &|y:i32, x:i32| { y + x });
   assert_eq!( reduce, 4950);
   println!("reduce result {}", reduce);
 
-  // test reduce 2
-  let reduce = RFrame{ vec: (1..10).collect::<Vec<i64>>() }.reduce(1, &|y:i64, x:i64| { y * x });
+  // test reduce 2)
+  let reduce = RFrame::withRange(1,10).reduce(1, &|y:i32, x:i32| { y * x });
   assert_eq!( reduce, 362880 );
   println!("reduce result {}", reduce);
 
@@ -97,12 +97,12 @@ fn main() {
   assert_eq!(to_vec, [2,4,6]);
   
   // toSetのテスト
-  let to_set = RFrame{vec: vec![1,2,3,4,5,4,3]}.toSet();
+  let to_set = RFrame::withVec(vec![1,2,3,4,5,4,3]).toSet();
   println!("to set {:?}", to_set);
   let hashset:HashSet<i32> = vec![1,2,3,4,5].into_iter().collect();
   assert_eq!(to_set, hashset);
 
-  let to_uniq = RFrame{vec:vec![1,2,2,2,3,3,3]}.toUniq();
+  let to_uniq = RFrame::withVec(vec![1,2,2,2,3,3,3]).toUniq();
   assert_eq!(to_uniq.vec.clone().into_iter().collect::<HashSet<i32>>(), vec![3,2,1].into_iter().collect::<HashSet<i32>>());
   println!("to uniq {:?}", to_uniq.vec);
   

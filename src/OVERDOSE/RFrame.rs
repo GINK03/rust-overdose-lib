@@ -23,6 +23,8 @@ use self::num::Num;
 use std::hash::{Hash, Hasher};
 #[derive(Debug)]
 pub struct RFrame<T:Clone>{
+  pub header:Option<HashMap<i32,String>>,
+  pub cursol:i32,
   pub vec: Vec<T>,
 }
 
@@ -30,14 +32,14 @@ pub struct RFrame<T:Clone>{
 impl<T: Clone> Shr<usize> for RFrame<T> {
   type Output = Self;
   fn shr(self, rhs: usize) -> RFrame<T> {
-    RFrame { vec: Vec::new() }
+    RFrame::withVec( Vec::new() )
   }
 }
 
 // Cloneの実装
 impl<T: Clone> Clone for RFrame<T> {
   fn clone(&self) -> RFrame<T> { 
-    RFrame{ vec:self.vec.clone() }
+    RFrame::withVec( self.vec.clone() )
   }
 }
 
@@ -48,7 +50,7 @@ impl<T:Clone> RFrame<T> {
     for i in it {
       tmp.push(i);
     }
-    RFrame { vec: tmp }
+    RFrame::withVec(tmp)
   }
 }
 
@@ -81,7 +83,7 @@ impl<T: Clone> RFrame<T> {
   // map(安全なマップ)
   pub fn map<OUTPUT: Clone>(self, functor: &Fn(T) -> OUTPUT) -> RFrame<OUTPUT> {
     let vec = self.vec.iter().map( |x| { functor(x.clone()) } ).collect::<Vec<OUTPUT>>();
-    RFrame { vec:vec }
+    RFrame::withVec(vec)
   }
   // reduce
   pub fn reduce<OUTPUT: Clone>(self, init:OUTPUT, functor: &Fn(OUTPUT, T) -> OUTPUT) -> OUTPUT {
@@ -108,7 +110,7 @@ impl<T: Clone> RFrame<T> {
       let funcret:FUNCRET = functor(key.clone());
       funcret
     }); 
-    RFrame{ vec:cloned }
+    RFrame::withVec(cloned)
   }
   // groupBy
   pub fn groupBy<OUTPUT: Clone + Eq + Hash + PartialEq>(self, functor: &Fn(T) -> OUTPUT) -> RFrame<(OUTPUT,RFrame<T>)> {
@@ -117,12 +119,12 @@ impl<T: Clone> RFrame<T> {
       let key:OUTPUT = functor(v.clone());
       let val = v.clone();
       let mut result = match map.entry(key) {
-        Vacant(entry) => entry.insert( RFrame{ vec:Vec::new()} ),
+        Vacant(entry) => entry.insert( RFrame::withVec(Vec::new()) ),
         Occupied(entry) => entry.into_mut(),
       };
       result.vec.push(val);
     }
-    let mut ret:RFrame<(OUTPUT, RFrame<T>)> = RFrame{ vec:Vec::new()};
+    let mut ret:RFrame<(OUTPUT, RFrame<T>)> = RFrame::withVec(Vec::new());
     for (key, vals) in map {
       ret.vec.push( (key,vals) );
     }
@@ -145,7 +147,7 @@ impl<T: Clone> RFrame<T> {
         ret.push(v);
       }
     }
-    RFrame{ vec:ret }
+    RFrame::withVec(ret)
   }
 }
 
@@ -177,9 +179,9 @@ impl<T: Clone+Copy+Debug> RFrame<T> {
       }
       rs = tmp;
     }
-    let mut rr: RFrame<RFrame<T>> = RFrame{ vec:Vec::new() };
+    let mut rr: RFrame<RFrame<T>> = RFrame::withVec(Vec::new());
     for r in rs {
-      rr.vec.push( RFrame{vec:r} );
+      rr.vec.push( RFrame::withVec(r) );
     } 
     rr
   }
@@ -211,7 +213,7 @@ impl<T: Clone+Eq+Hash+Num+Copy+Debug> RFrame<T> {
     for s in set {
       vec.push(s);
     }
-    RFrame{vec:vec}
+    RFrame::withVec(vec)
   }
 }
 // accumulate
@@ -223,7 +225,7 @@ impl<T: Clone+Num+Copy+Debug> RFrame<T> {
       acc = acc + v;
       ret.push(acc);
     }
-    RFrame{vec:ret}
+    RFrame::withVec(ret)
   }
 }
 // sum
@@ -273,13 +275,13 @@ impl<T: Clone+Num+PartialOrd+Copy+Debug> RFrame<T> {
 impl RFrame<i32> {
   pub fn withRange(start:i32, end:i32) -> RFrame<i32> {
     let mut tmp:Vec<i32> = (start..end).collect::<Vec<i32>>();
-    RFrame { vec: tmp }
+    RFrame::withVec( tmp )
   }
 }
 // vecで初期化することができる( vecはコピーでなくて譲渡 )
 impl<T: Clone> RFrame<T> {
   pub fn withVec( vs:Vec<T> ) -> RFrame<T> {
-    RFrame { vec:vs }
+    RFrame { header:None, cursol:0, vec:vs }
   }
 }
 
@@ -287,6 +289,6 @@ impl<T: Clone> RFrame<T> {
 impl<T: Clone> RFrame<T> {
   pub fn withBlank( ) -> RFrame<T> {
     let v:Vec<T> = Vec::new();
-    RFrame { vec:v }
+    RFrame::withVec(v)
   }
 }
