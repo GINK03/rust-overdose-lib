@@ -10,18 +10,8 @@ use OVERDOSE::RFrame::RFrame;
 use OVERDOSE::File::Read;
 use OVERDOSE::Enumerate::Enumerate;
 use OVERDOSE::Concurrent;
+use OVERDOSE::RowOrientedCSV::RowOrientedCSV;
 fn main() {
-  // The statements here will be executed when the compiled binary is called
-  // Print text to the console
-  let contents = Read("./resource/iris.csv", true);
-  contents.iter().map( |hmap| { 
-    hmap.iter().map( |x| {
-      let (key,val) = x;
-      println!("{} {}", key, val);
-      (0,0)
-    }).collect::<HashMap<_,_>>();
-  } ).collect::<Vec<_>>();
-  //contents.iter().map(|x| {println!("{}",x);0} ).collect::<Vec<_>>();
   (0..100).map( |x| { println!("{}",x);(x%5,x)}) ;
   RFrame::withRange(0,100)
     .map( &|x| { x*x } )
@@ -134,7 +124,7 @@ fn main() {
   // concurrentのテスト
   let conc = Concurrent::Concurrent::map( RFrame::withRange(0,100).vec, |x|{ x*2 } );
   RFrame::withVec(conc).echo();
-  Concurrent::Concurrent::chunkedMap( RFrame::withRange(1,1000000).vec, |x| { 
+  let primes = Concurrent::Concurrent::chunkedMap( RFrame::withRange(1,10000).vec, |x| { 
     let mut isPrime = true;
     for s in (2..x/2)  {
       if x%s == 0 {
@@ -142,8 +132,40 @@ fn main() {
         break;
       }
     }
-    println!("prime scan {} {}",x, isPrime);
+    //println!("prime scan {} {}",x, isPrime);
     (x, isPrime)
   });
+  assert_eq!(1231, RFrame::withVec(primes).filter(&|x| { x.1 == true }).vec.len());
+  
+  //let csv = RowOrientedCSV::open("resource/vehicles.csv".to_string());
+  let csv = RowOrientedCSV::concurrentOpen("resource/vehicles.csv".to_string());
+  let df = RFrame::withVec(csv);
+  //df.echo();
+  df.map( &|m| {
+    let m = m.clone();
+    let make = match m.get("make") {
+      Some(c) => Some(format!("{}", c)),
+      None => None,
+    };
+    let fuel = match m.get("fuelCost08") {
+      Some(c) => Some(format!("{}", c)),
+      None => None,
+    };
+    (make, fuel) 
+  }).map(&|tup| {
+    let (make, fuel) = tup;
+    (make.unwrap(), fuel.unwrap()) 
+  }).groupBy( &|x| {
+    x.0
+  }).map( &|xs| {
+    let (k,rs) = xs;
+    (k, rs.vec.len())
+  }).sortBy( &|xs|{
+    let (k, num) = xs;
+    num
+  }).map( &|xs| {
+    println!("{:?}", xs);
+  });
+  //RowOrientedCSV::echo();
 }
 
