@@ -87,7 +87,7 @@ fn main() {
   assert_eq!(to_vec, [2,4,6]);
   
   // toSetのテスト
-  let to_set = RFrame::withVec(vec![1,2,3,4,5,4,3]).toSet();
+  let to_set = RFrame::withVec([1,2,3,4,5,4,3].to_vec()).toSet();
   println!("to set {:?}", to_set);
   let hashset:HashSet<i32> = vec![1,2,3,4,5].into_iter().collect();
   assert_eq!(to_set, hashset);
