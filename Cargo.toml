@@ -5,9 +5,23 @@ include = [
   "**/*.rs",
   "Cargo.toml",
 ]
+authors = ["angeldust03@gmail.com"]
+description = "Fast, Row Oriented, Kotlin, Scala-like dataframe"
+documentation = "https://github.com/GINK03/rust-overdose-lib"
+homepage = "https://gink03.github.io/"
+repository = "https://github.com/GINK03/rust-overdose-lib"
+#readme = "..."
+
+keywords = ["datascience", "concurrency"]
+
+categories = ["data", "science"]
+
+license = "MIT"
+
+#license-file = "..."
 
 [dependencies]
-num = "*"
+num = "0.1.40"
 itertools = "0.7.1"
 serde_json = "1.0"
 
