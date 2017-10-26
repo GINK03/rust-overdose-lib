@@ -9,7 +9,7 @@ mod OVERDOSE;
 use OVERDOSE::RFrame::RFrame;
 use OVERDOSE::File::Read;
 use OVERDOSE::Enumerate::Enumerate;
-
+use OVERDOSE::Concurrent;
 fn main() {
   // The statements here will be executed when the compiled binary is called
   // Print text to the console
@@ -130,5 +130,9 @@ fn main() {
   let x3i = x3.indexes(vec![0,2,3]);
   println!("{:?}", x3i.vec);
   assert_eq!(format!("{:?}",x3i.vec), "[[1, 3, 4], [4, 6, 7]]");
+
+  // concurrentのテスト
+  let conc = Concurrent::Concurrent::map( RFrame::withRange(0,100).vec, |x|{ x*2 } );
+  RFrame::withVec(conc).echo();
 }
 
