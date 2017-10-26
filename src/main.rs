@@ -134,5 +134,16 @@ fn main() {
   // concurrentのテスト
   let conc = Concurrent::Concurrent::map( RFrame::withRange(0,100).vec, |x|{ x*2 } );
   RFrame::withVec(conc).echo();
+  Concurrent::Concurrent::chunkedMap( RFrame::withRange(1,1000000).vec, |x| { 
+    let mut isPrime = true;
+    for s in (2..x/2)  {
+      if x%s == 0 {
+        isPrime = false;
+        break;
+      }
+    }
+    println!("prime scan {} {}",x, isPrime);
+    (x, isPrime)
+  });
 }
 
