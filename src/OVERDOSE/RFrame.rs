@@ -274,6 +274,7 @@ impl<T: Clone+Num+PartialOrd+Copy+Debug> RFrame<T> {
     result
   }
 }
+// histAuto(自動のキーの粒度で、histを作成)
 
 // rangeで初期化することができる
 impl RFrame<i32> {
@@ -284,7 +285,7 @@ impl RFrame<i32> {
 }
 // vecで初期化することができる( vecはコピーでなくて譲渡 )
 impl<T: Clone> RFrame<T> {
-  pub fn withVec( vs:Vec<T> ) -> RFrame<T> {
+  pub fn withVeStrc( vs:Vec<T> ) -> RFrame<T> {
     RFrame { header:None, cursol:0, vec:vs }
   }
   pub fn withVecIndexed( vi:Vec<String>, vs:Vec<T> ) -> RFrame<T> {
@@ -363,6 +364,6 @@ impl<T: Clone> RFrame<Vec<T>> {
 impl<T: Clone> RFrame<T> {
   pub fn withBlank( ) -> RFrame<T> {
     let v:Vec<T> = Vec::new();
-    RFrame::withVec(v)
+ .   RFrame::withVec(v)
   }
 }
