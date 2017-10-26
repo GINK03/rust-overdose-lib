@@ -141,7 +141,7 @@ fn main() {
   let csv = RowOrientedCSV::concurrentOpen("resource/vehicles.csv".to_string());
   let df = RFrame::withVec(csv);
   //df.echo();
-  df.map( &|m| {
+  df.clone().map( &|m| {
     let m = m.clone();
     let make = match m.get("make") {
       Some(c) => Some(format!("{}", c)),
@@ -163,6 +163,33 @@ fn main() {
   }).sortBy( &|xs|{
     let (k, num) = xs;
     num
+  }).map( &|xs| {
+    println!("{:?}", xs);
+  });
+  // ここで各社の燃料をdoubleにしてreduceする
+  df.map( &|m| {
+    let m = m.clone();
+    let make = match m.get("make") {
+      Some(c) => Some(format!("{}", c)),
+      None => None,
+    };
+    let fuel = match m.get("fuelCost08") {
+      Some(c) => Some(format!("{}", c)),
+      None => None,
+    };
+    (make, fuel) 
+  }).map(&|tup| {
+    let (make, fuel) = tup;
+    (make.unwrap(), fuel.unwrap()) 
+  }).groupBy( &|x| {
+    x.0
+  }).map( &|xs| {
+    let (k,rs) = xs;
+    let reduce = rs.map( &|x| { x.1.parse::<i32>().unwrap()} ).sum();
+    (k, reduce)
+  }).sortBy( &|xs|{
+    let (k, reduce) = xs;
+    reduce
   }).map( &|xs| {
     println!("{:?}", xs);
   });
