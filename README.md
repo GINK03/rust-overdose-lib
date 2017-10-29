@@ -61,3 +61,12 @@ let size = RFrame::withRange(1,6).vec.len();
 println!("{:?}", size);
 5
 ```
+
+### ベクトルの連結
+[1, 2, 3, 4, 5]と[6, 7, 8, 9, 10]を連結する
+- OVERDOSEで行う場合
+```rust
+let conc = RFrame::withRange(1,6).concat( RFrame::withRange(6,11) ); 
+println!("{:?}", conc.vec);
+[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+```
