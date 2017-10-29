@@ -119,6 +119,13 @@ impl<T: Clone> RFrame<T> {
     }
     RFrame::withVec(ret)
   }
+  // concat
+  pub fn concat(mut self, rframe: RFrame<T> ) -> RFrame<T> {
+    for v in rframe.vec {
+      self.vec.push(v); 
+    }
+    RFrame::withVec(self.vec)
+  }
   // sortBy (安全なソート)
   pub fn sortBy<FUNCRET: Clone+Ord>(self, functor: &Fn(T) -> FUNCRET) -> RFrame<T> {
     let mut cloned = self.vec.clone();
@@ -154,6 +161,14 @@ impl<T: Clone> RFrame<T> {
       if functor(v) == true { counter+=1 }
     }
     counter == total_size
+  }
+  // any
+  pub fn any(self, functor: &Fn(T) -> bool) -> bool {
+    let mut counter = 0;
+    for v in self.vec { 
+      if functor(v) == true { counter+=1 }
+    }
+    counter > 0
   }
   // repeat
   pub fn repeat(self, repeatNum: i32) -> RFrame<T> {
@@ -218,13 +233,14 @@ impl<T: Clone+Eq+Hash+Num+Copy+Debug> RFrame<T> {
     set
   }
 }
-// toJsonの実装
+// toJsonの実装y
 impl<T: Clone+Eq+Debug+serde::ser::Serialize> RFrame<T> {
   pub fn toJson(self) -> Vec<String> {
     let mut ret:Vec<String> = Vec::new();
     for entry in self.vec {
-      let json = serde_json::to_string(&entry).ok().unwrap();
-      ret.push(json);
+      if let Some(json) = serde_json::to_string(&entry).ok() {
+        ret.push(json);
+      }
     }
     ret
   }

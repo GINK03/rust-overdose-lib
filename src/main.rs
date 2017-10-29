@@ -15,7 +15,39 @@ use OVERDOSE::File::Read;
 use OVERDOSE::Enumerate::Enumerate;
 use OVERDOSE::Concurrent;
 use OVERDOSE::RowOrientedCSV::RowOrientedCSV;
+
+use std::process;
 fn main() {
+  let bs = (1..6).collect::<Vec<i32>>(); 
+  println!("{:?}", bs);
+  
+  let bs = RFrame::withRange(1,6); 
+  println!("{:?}", bs.vec);
+
+  let bs = (1..6).map(|x| x*3).collect::<Vec<i32>>();
+  println!("{:?}", bs);
+
+  let bs = RFrame::withRange(1,6).map( &|x| {x*3} ); 
+  println!("{:?}", bs.vec);
+
+  let bs = RFrame::withRange(1,6).vec.iter().zip( RFrame::withRange(6,11).vec.iter() ).map( |x| (x.0.clone()+x.1.clone()) ).collect::<Vec<i32>>();
+  println!("{:?}", bs);
+
+  let size = (1..6).into_iter().collect::<Vec<i32>>().len();
+  println!("{:?}", size);
+
+  let size = RFrame::withRange(1,6).vec.len();
+  println!("{:?}", size);
+
+  let conc = RFrame::withRange(1,6).concat( RFrame::withRange(6,11) ); 
+  println!("{:?}", conc.vec);
+
+  let any = RFrame::withRange(1,6).any( &|x| { x%2 == 0} );
+  println!("{:?}", any);
+  
+  let any = RFrame::withRange(1,6).any( &|x| { x%7 == 0} );
+  println!("{:?}", any);
+  process::exit(100);
   (0..100).map( |x| { println!("{}",x);(x%5,x)}) ;
   RFrame::withRange(0,100)
     .map( &|x| { x*x } )
@@ -232,6 +264,9 @@ fn main() {
   for json in RFrame::withVec(cs).toJson() {
     println!("{}", json);
   }
-  
+ 
+  for ch in "abcあいうえお ".to_string().chars().collect::<Vec<char>>() {
+    println!("{}", ch);
+  }
 }
 
