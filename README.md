@@ -72,7 +72,8 @@ println!("{:?}", conc.vec);
 [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 ```
 
-## Any
+## 評価関数
+## any
 リスト内の一つの要素でも満たしていたら、trueがかえる  
 [1, 2, 3, 4, 5]のうち2で割り切れるものがあるか
 ```rust
@@ -85,4 +86,16 @@ true
 let any = RFrame::withRange(1,6).any( &|x| { x%7 == 0} ); 
 println!("{:?}", any); 
 false
+```
+
+## all
+[1, 2, 3, 4, 5]のリスト内の要素がすべて10未満であるか
+```rust
+let all = RFrame::withRange(1,6).all( &|x| { x < 10 } );
+println!("{:?}", all); 
+```
+[1, 2, 3, 4, 5]のリスト内の要素が3以上であるか
+```rust
+let all = RFrame::withRange(1,6).all( &|x| { x >= 3 } );
+println!("{:?}", all);
 ```
