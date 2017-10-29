@@ -1,4 +1,7 @@
 
+extern crate serde_json;
+extern crate serde;
+use serde_json::{Value, Error};
 use std::fs::File;
 use std::io::prelude::*;
 use std::path::Path;
@@ -20,7 +23,9 @@ use self::num::Num;
 use std::hash::{Hash, Hasher};
 //use std::num::Zero;
 //use std::num::Num;
-#[derive(Debug)]
+use Concurrent::Concurrent;                       
+
+#[derive(Debug, Serialize, Deserialize)]
 pub struct RFrame<T:Clone>{
   pub header:Option<HashMap<String,i32>>,
   pub cursol:i32,
@@ -82,7 +87,14 @@ impl<T:Clone + Display> RFrame<T> {
     println!("]");
   }
 }
-
+impl<T: Clone+Send+Debug+'static> RFrame<T> { 
+  // cmap
+  pub fn cmap<OUTPUT: Clone+Send+Debug+'static,F:Send+Sized>(self, functor: F) 
+    -> RFrame<OUTPUT> where F: Send + 'static + Fn(T) -> OUTPUT + Sync {
+    let vec = Concurrent::chunkedMap(self.vec, move |x| { functor(x.clone()) } );
+    RFrame::withVec(vec)
+  }
+}
 impl<T: Clone> RFrame<T> {
   // map(安全なマップ)
   pub fn map<OUTPUT: Clone>(self, functor: &Fn(T) -> OUTPUT) -> RFrame<OUTPUT> {
@@ -204,6 +216,17 @@ impl<T: Clone+Eq+Hash+Num+Copy+Debug> RFrame<T> {
       set.insert(v);
     }
     set
+  }
+}
+// toJsonの実装
+impl<T: Clone+Eq+Debug+serde::ser::Serialize> RFrame<T> {
+  pub fn toJson(self) -> Vec<String> {
+    let mut ret:Vec<String> = Vec::new();
+    for entry in self.vec {
+      let json = serde_json::to_string(&entry).ok().unwrap();
+      ret.push(json);
+    }
+    ret
   }
 }
 // uniqの実装

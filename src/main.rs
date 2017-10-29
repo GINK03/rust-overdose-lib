@@ -1,4 +1,8 @@
-
+#[macro_use]
+extern crate serde_derive;
+#[macro_use]
+extern crate serde_json;
+use serde_json::{Value, Error};
 
 use std::collections::HashMap;
 use std::collections::HashSet;
@@ -194,5 +198,40 @@ fn main() {
     println!("{:?}", xs);
   });
   //RowOrientedCSV::echo();
+
+  RFrame::withRange(1,1000).cmap( |x| {x*3}).echo();
+
+  let data = r#"{
+                "name": "John Doe",
+                "age": 43,
+                "phones": [
+                  "+44 1234567",
+                  "+44 2345678"
+                 ]
+             }"#;
+
+    // Parse the string of data into serde_json::Value.
+  let v: Value = serde_json::from_str(data).ok().unwrap();
+  println!("Please call {} at the number {}", v["name"], v["phones"][0]);
+
+  let john = json!({
+    "name": "John Doe",
+    "age": 43,
+    "phones": [
+      "+44 1234567",
+      "+44 2345678" ]
+    });
+
+  let mut cs:Vec<HashMap<i32,String>> = Vec::new();
+  for i in (0..10) {
+    let hashmap: HashMap<i32,String> 
+      = vec![(1,"A"),(2,"B"),(3,"C")].into_iter()
+      .map(|xs| (xs.0, xs.1.to_string())).collect::<HashMap<i32,String>>();
+    cs.push(hashmap);
+  }
+  for json in RFrame::withVec(cs).toJson() {
+    println!("{}", json);
+  }
+  
 }
 
