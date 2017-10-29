@@ -2,6 +2,7 @@
 
 ## 項目
 - 四則演算とベクトル
+- 評価(any, all)
 
 ## 四則演算とベクトル
 ### ベクトルの初期化
@@ -69,4 +70,19 @@ println!("{:?}", size);
 let conc = RFrame::withRange(1,6).concat( RFrame::withRange(6,11) ); 
 println!("{:?}", conc.vec);
 [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+```
+
+## Any
+リスト内の一つの要素でも満たしていたら、trueがかえる  
+[1, 2, 3, 4, 5]のうち2で割り切れるものがあるか
+```rust
+let any = RFrame::withRange(1,6).any( &|x| { x%2 == 0} ); 
+println!("{:?}", any); 
+true
+```
+[1, 2, 3, 4, 5]のうち、7で割り切れるものがあるか
+```rust
+let any = RFrame::withRange(1,6).any( &|x| { x%7 == 0} ); 
+println!("{:?}", any); 
+false
 ```
