@@ -45,3 +45,18 @@ let bs = RFrame::withRange(1,6).vec.iter().zip( RFrame::withRange(6,11).vec.iter
 println!("{:?}", bs);
 [7, 9, 11, 13, 15]
 ```
+
+### ベクトルのサイズの確認
+xs = [1, 2, 3, 4, 5]  
+これのサイズを求める
+- 標準関数で行う場合
+```rust
+let size = (1..6).into_iter().collect::<Vec<i32>>().len();   
+println!("{:?}", size);
+5
+```
+- OVERDOSEで行う場合
+```rust
+let size = RFrame::withRange(1,6).vec.len(); 
+println!("{:?}", size);
+```
