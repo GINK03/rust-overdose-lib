@@ -59,4 +59,5 @@ println!("{:?}", size);
 ```rust
 let size = RFrame::withRange(1,6).vec.len(); 
 println!("{:?}", size);
+5
 ```
