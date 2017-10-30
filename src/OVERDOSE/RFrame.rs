@@ -23,8 +23,8 @@ use self::num::Num;
 use std::hash::{Hash, Hasher};
 //use std::num::Zero;
 //use std::num::Num;
-use Concurrent::Concurrent;                       
-
+use Concurrent::Concurrent;                
+use RowOrientedCSV;
 #[derive(Debug, Serialize, Deserialize)]
 pub struct RFrame<T:Clone>{
   pub header:Option<HashMap<String,i32>>,
@@ -70,6 +70,19 @@ impl<T:Clone> RFrame<T> {
   }
 }
 
+// insertHeader
+impl<T:Clone> RFrame<T> {
+  pub fn insertHeader<IN:Clone+Display>(mut self, headers:Vec<IN> ) -> RFrame<T> {
+    let mut index:i32 = 0;
+    let mut map:HashMap<String,i32> = HashMap::new();
+    for head in headers.clone() {
+      map.insert( head.to_string(), index); 
+      index+=1;
+    }
+    self.header = Some( map );
+    self
+  }
+}
 // showの実装
 impl<T:Clone + Display> RFrame<T> {
   pub fn show(self) -> () {
@@ -315,6 +328,14 @@ impl<T: Clone+Num+PartialOrd+Copy+Debug> RFrame<T> {
 }
 // histAuto(自動のキーの粒度で、histを作成)
 
+// csvで初期化することができる
+impl RFrame<i32> {
+  pub fn withCSV(name:&str) -> RFrame<HashMap<String,String>> {
+    let name = name.to_string();
+    let mut tmp:Vec<HashMap<String,String>> = RowOrientedCSV::concurrentOpen(name);
+    RFrame::withVec( tmp )
+  }
+}
 // rangeで初期化することができる
 impl RFrame<i32> {
   pub fn withRange(start:i32, end:i32) -> RFrame<i32> {

@@ -47,6 +47,12 @@ fn main() {
   
   let any = RFrame::withRange(1,6).any( &|x| { x%7 == 0} );
   println!("{:?}", any);
+
+  let header = RFrame::withRange(1,5).insertHeader( ["a", "b", "c", "d", "e"].to_vec() );
+  println!("{:?}", header);
+
+  let csv = RFrame::withCSV("./resource/TomatoFirst.csv");
+  println!("{:?}", csv);
   process::exit(100);
   (0..100).map( |x| { println!("{}",x);(x%5,x)}) ;
   RFrame::withRange(0,100)
