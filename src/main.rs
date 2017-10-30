@@ -47,6 +47,7 @@ fn main() {
   
   let any = RFrame::withRange(1,6).any( &|x| { x%7 == 0} );
   println!("{:?}", any);
+<<<<<<< HEAD
   
   let all = RFrame::withRange(1,6).all( &|x| { x < 10 } );
   println!("{:?}", all);
@@ -56,6 +57,14 @@ fn main() {
 
   let zip = RFrame::withVec(["a", "b", "c"].to_vec()).zip(RFrame::withRange(1,4));
   println!("{:?}", zip);
+=======
+
+  let header = RFrame::withRange(1,5).insertHeader( ["a", "b", "c", "d", "e"].to_vec() );
+  println!("{:?}", header);
+
+  let csv = RFrame::withCSV("./resource/TomatoFirst.csv");
+  println!("{:?}", csv);
+>>>>>>> 3cf7c55ac25f878d95e61a5267c66006c6db2728
   process::exit(100);
   (0..100).map( |x| { println!("{}",x);(x%5,x)}) ;
   RFrame::withRange(0,100)

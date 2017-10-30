@@ -3,6 +3,7 @@
 ## 項目
 - 四則演算とベクトル
 - 評価(any, all)
+- データセットにインデックスを貼る
 
 ## 四則演算とベクトル
 ### ベクトルの初期化
@@ -46,6 +47,13 @@ let bs = RFrame::withRange(1,6).vec.iter().zip( RFrame::withRange(6,11).vec.iter
 println!("{:?}", bs);
 [7, 9, 11, 13, 15]
 ```
+- OVERDOSEで行う場合  
+一度タプルでまとめあげ、必要におうじて足し算などのオペレーションをします  
+```rust
+let zip = RFrame::withVec(["a", "b", "c"].to_vec()).zip(RFrame::withRange(1,4)); 
+println!("{:?}", zip); 
+RFrame { header: None, cursol: 0, vec: [("a", 1), ("b", 2), ("c", 3)] }
+```
 
 ### ベクトルのサイズの確認
 xs = [1, 2, 3, 4, 5]  
@@ -72,7 +80,8 @@ println!("{:?}", conc.vec);
 [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 ```
 
-## Any
+## 評価関数
+### any
 リスト内の一つの要素でも満たしていたら、trueがかえる  
 [1, 2, 3, 4, 5]のうち2で割り切れるものがあるか
 ```rust
@@ -85,4 +94,37 @@ true
 let any = RFrame::withRange(1,6).any( &|x| { x%7 == 0} ); 
 println!("{:?}", any); 
 false
+```
+
+### all
+[1, 2, 3, 4, 5]のリスト内の要素がすべて10未満であるか
+```rust
+let all = RFrame::withRange(1,6).all( &|x| { x < 10 } );
+println!("{:?}", all); 
+```
+[1, 2, 3, 4, 5]のリスト内の要素が3以上であるか
+```rust
+let all = RFrame::withRange(1,6).all( &|x| { x >= 3 } );
+println!("{:?}", all);
+```
+
+## データセットにインデックスを貼る
+sliceした時になどに、インデックスにわかりやすい名前が付いていると操作しやすいのですが、ユーザでも定義可能です  
+例えば、[1, 2, 3, 4, 5]のデータセットに対して、["a", "b", "c", "d", "e"]のそれぞれのインデックスを割り当てる場合、次のようにします  
+- OVERDOSEを使う場合
+```rust
+let header = RFrame::withRange(1,5).insertHeader( ["a", "b", "c", "d", "e"].to_vec() ); 
+println!("{:?}", header);
+RFrame { header: Some({"d": 3, "c": 2, "a": 0, "b": 1, "e": 4}), cursol: 0, vec: [1, 2, 3, 4] }
+```
+
+## CSVを読み込む
+Rのデータフレームでは列志向のデータになっており、インデックの中で特定の列名を指定することで実現しますが、OVERDOSEでは行志向のフレームを最初に提供します  
+これは様々な理由があるのですが、データの取り回しがいいことと、極端なBigDataになってリソースを気にしない限り行志向である方が、ラムダ関数によるデータ分析がやりやすいということからそうしています  
+CSVは最大32並列で分解されて読み込まれるので、高速ですが、その読み込み順は担保されません  
+- OVERDOSEを使う場合
+```rust
+let csv = RFrame::withCSV("./resource/TomatoFirst.csv"); 
+println!("{:?}", csv); 
+RFrame { header: None, cursol: 0, vec: [{"Avg of Totals": "16.1", "Acid": "2.8", "Texture": "3.4", ...
 ```
