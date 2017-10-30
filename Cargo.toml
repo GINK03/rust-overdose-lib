@@ -26,4 +26,5 @@ itertools = "0.7.1"
 serde_derive = "0.9"
 serde_json = "0.9"
 serde = "0.9"
-
+hyper = "*"
+hyper-native-tls = "*"

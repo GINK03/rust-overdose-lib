@@ -135,6 +135,16 @@ impl<T: Clone> RFrame<T> {
     }); 
     RFrame::withVec(cloned)
   }
+  // zip 
+  pub fn zip<RI:Clone>(self, rframe:RFrame<RI>) -> RFrame<(T,RI)> {
+    let mut size:i32 = self.vec.len() as i32;
+    if size < rframe.vec.len() as i32 { size = rframe.vec.len() as i32 };
+    let mut ret:Vec<(T,RI)> = Vec::new();
+    for i in (0..self.vec.len()) {
+      ret.push( (self.vec[i].clone(), rframe.vec[i].clone()) );
+    }
+    RFrame::withVec(ret)
+  }
   // groupBy
   pub fn groupBy<OUTPUT: Clone + Eq + Hash + PartialEq>(self, functor: &Fn(T) -> OUTPUT) -> RFrame<(OUTPUT,RFrame<T>)> {
     let mut map:HashMap<OUTPUT,RFrame<T>> = HashMap::new();

@@ -47,6 +47,15 @@ fn main() {
   
   let any = RFrame::withRange(1,6).any( &|x| { x%7 == 0} );
   println!("{:?}", any);
+  
+  let all = RFrame::withRange(1,6).all( &|x| { x < 10 } );
+  println!("{:?}", all);
+  
+  let all = RFrame::withRange(1,6).all( &|x| { x >= 3 } );
+  println!("{:?}", all);
+
+  let zip = RFrame::withVec(["a", "b", "c"].to_vec()).zip(RFrame::withRange(1,4));
+  println!("{:?}", zip);
   process::exit(100);
   (0..100).map( |x| { println!("{}",x);(x%5,x)}) ;
   RFrame::withRange(0,100)
