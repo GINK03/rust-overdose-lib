@@ -110,3 +110,14 @@ let header = RFrame::withRange(1,5).insertHeader( ["a", "b", "c", "d", "e"].to_v
 println!("{:?}", header);
 RFrame { header: Some({"d": 3, "c": 2, "a": 0, "b": 1, "e": 4}), cursol: 0, vec: [1, 2, 3, 4] }
 ```
+
+## CSVを読み込む
+Rのデータフレームでは列志向のデータになっており、インデックの中で特定の列名を指定することで実現しますが、OVERDOSEでは行志向のフレームを最初に提供します  
+これは様々な理由があるのですが、データの取り回しがいいことと、極端なBigDataになってリソースを気にしない限り行志向である方が、ラムダ関数によるデータ分析がやりやすいということからそうしています  
+CSVは最大32並列で分解されて読み込まれるので、高速ですが、その読み込み順は担保されません  
+- OVERDOSEを使う場合
+```rust
+let csv = RFrame::withCSV("./resource/TomatoFirst.csv"); 
+println!("{:?}", csv); 
+RFrame { header: None, cursol: 0, vec: [{"Avg of Totals": "16.1", "Acid": "2.8", "Texture": "3.4", ...
+```
