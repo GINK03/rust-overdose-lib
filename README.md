@@ -3,6 +3,7 @@
 ## 項目
 - 四則演算とベクトル
 - 評価(any, all)
+- データセットにインデックスを貼る
 
 ## 四則演算とベクトル
 ### ベクトルの初期化
@@ -73,7 +74,7 @@ println!("{:?}", conc.vec);
 ```
 
 ## 評価関数
-## any
+### any
 リスト内の一つの要素でも満たしていたら、trueがかえる  
 [1, 2, 3, 4, 5]のうち2で割り切れるものがあるか
 ```rust
@@ -88,7 +89,7 @@ println!("{:?}", any);
 false
 ```
 
-## all
+### all
 [1, 2, 3, 4, 5]のリスト内の要素がすべて10未満であるか
 ```rust
 let all = RFrame::withRange(1,6).all( &|x| { x < 10 } );
@@ -98,4 +99,14 @@ println!("{:?}", all);
 ```rust
 let all = RFrame::withRange(1,6).all( &|x| { x >= 3 } );
 println!("{:?}", all);
+```
+
+## データセットにインデックスを貼る
+sliceした時になどに、インデックスにわかりやすい名前が付いていると操作しやすいのですが、ユーザでも定義可能です  
+例えば、[1, 2, 3, 4, 5]のデータセットに対して、["a", "b", "c", "d", "e"]のそれぞれのインデックスを割り当てる場合、次のようにします  
+- OVERDOSEを使う場合
+```rust
+let header = RFrame::withRange(1,5).insertHeader( ["a", "b", "c", "d", "e"].to_vec() ); 
+println!("{:?}", header);
+RFrame { header: Some({"d": 3, "c": 2, "a": 0, "b": 1, "e": 4}), cursol: 0, vec: [1, 2, 3, 4] }
 ```
