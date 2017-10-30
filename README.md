@@ -47,6 +47,13 @@ let bs = RFrame::withRange(1,6).vec.iter().zip( RFrame::withRange(6,11).vec.iter
 println!("{:?}", bs);
 [7, 9, 11, 13, 15]
 ```
+- OVERDOSEで行う場合  
+一度タプルでまとめあげ、必要におうじて足し算などのオペレーションをします  
+```rust
+let zip = RFrame::withVec(["a", "b", "c"].to_vec()).zip(RFrame::withRange(1,4)); 
+println!("{:?}", zip); 
+RFrame { header: None, cursol: 0, vec: [("a", 1), ("b", 2), ("c", 3)] }
+```
 
 ### ベクトルのサイズの確認
 xs = [1, 2, 3, 4, 5]  
