@@ -9,13 +9,14 @@ use std::collections::HashSet;
 extern crate itertools;
 use itertools::Itertools;
 use std::ops::Shr;
+
 mod OVERDOSE;
 use OVERDOSE::RFrame::RFrame;
 use OVERDOSE::File::Read;
 use OVERDOSE::Enumerate::Enumerate;
 use OVERDOSE::Concurrent;
 use OVERDOSE::RowOrientedCSV::RowOrientedCSV;
-
+use OVERDOSE::ChiSquared;
 use std::process;
 fn main() {
   let bs = (1..6).collect::<Vec<i32>>(); 
@@ -47,7 +48,6 @@ fn main() {
   
   let any = RFrame::withRange(1,6).any( &|x| { x%7 == 0} );
   println!("{:?}", any);
-<<<<<<< HEAD
   
   let all = RFrame::withRange(1,6).all( &|x| { x < 10 } );
   println!("{:?}", all);
@@ -57,14 +57,11 @@ fn main() {
 
   let zip = RFrame::withVec(["a", "b", "c"].to_vec()).zip(RFrame::withRange(1,4));
   println!("{:?}", zip);
-=======
 
-  let header = RFrame::withRange(1,5).insertHeader( ["a", "b", "c", "d", "e"].to_vec() );
-  println!("{:?}", header);
-
-  let csv = RFrame::withCSV("./resource/TomatoFirst.csv");
-  println!("{:?}", csv);
->>>>>>> 3cf7c55ac25f878d95e61a5267c66006c6db2728
+  // test chi squre 
+  ChiSquared::ChiSquared::compareFreqs(
+            RFrame::withVec([45, 55].to_vec()),
+            RFrame::withVec([50,50].to_vec()) );
   process::exit(100);
   (0..100).map( |x| { println!("{}",x);(x%5,x)}) ;
   RFrame::withRange(0,100)

@@ -28,3 +28,5 @@ serde_json = "0.9"
 serde = "0.9"
 hyper = "*"
 hyper-native-tls = "*"
+
+rand = "0.3.17"
