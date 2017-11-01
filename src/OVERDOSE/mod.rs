@@ -4,3 +4,4 @@ pub mod Enumerate;
 pub mod File;
 pub mod Concurrent;
 pub mod ChiSquared;
+pub mod Fisher;

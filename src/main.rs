@@ -17,6 +17,7 @@ use OVERDOSE::Enumerate::Enumerate;
 use OVERDOSE::Concurrent;
 use OVERDOSE::RowOrientedCSV::RowOrientedCSV;
 use OVERDOSE::ChiSquared;
+use OVERDOSE::Fisher;
 use std::process;
 fn main() {
   let bs = (1..6).collect::<Vec<i32>>(); 
@@ -62,6 +63,8 @@ fn main() {
   ChiSquared::ChiSquared::compareFreqs(
             RFrame::withVec([45, 55].to_vec()),
             RFrame::withVec([50,50].to_vec()) );
+  let fish = Fisher::Fisher::compareNormal( (3, 2, 1, 4) );
+  println!("Fisher {:?}", fish);
   process::exit(100);
   (0..100).map( |x| { println!("{}",x);(x%5,x)}) ;
   RFrame::withRange(0,100)
